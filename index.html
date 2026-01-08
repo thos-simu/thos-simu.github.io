@@ -162,7 +162,13 @@
             transition: background-color 0.3s ease;
         }
         .nav-bar.black-bg { background-color: black; }
-        .nav-btn { height: 24px; width: auto; opacity: 0.9; cursor: pointer; transition: 0.1s; padding: 8px; box-sizing: content-box; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+        .nav-btn {
+            height: 28px; width: 28px; /* Standardize size */
+            opacity: 0.9; cursor: pointer; transition: 0.1s;
+            padding: 8px; box-sizing: content-box; 
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+            fill: white; /* Color for SVGs */
+        }
         .nav-btn:active { transform: scale(0.8); opacity: 0.6; }
 
         /* --- APP STYLES --- */
@@ -180,6 +186,14 @@
         #notesApp, #mailApp { background: #fff; } .notes-list, .mail-list { padding: 15px; flex: 1; overflow-y: auto; } .note-card { background: #fff9c4; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; } .note-card h3 { font-size: 16px; margin-bottom: 5px; color: #333; } .note-card p { font-size: 13px; color: #666; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .mail-item { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #eee; cursor: pointer; } .mail-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e91e63; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 16px; } .mail-content { flex: 1; min-width: 0; } .mail-sender { font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; } .mail-time { font-weight: 400; color: #888; font-size: 12px; } .mail-subject { font-weight: 500; font-size: 14px; color: #333; margin: 2px 0; } .mail-snippet { font-size: 13px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         #filesApp { background-color: #f5f5f5; } .storage-box { background: white; padding: 20px; margin: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); } .storage-title { display: flex; justify-content: space-between; font-weight: 600; font-size: 16px; margin-bottom: 10px; } .storage-bar-bg { height: 8px; background: #eee; border-radius: 4px; margin-bottom: 10px; overflow: hidden; } .storage-bar-fill { height: 100%; width: 65%; background: linear-gradient(90deg, #f1c40f, #f39c12); } .storage-detail { font-size: 13px; color: #888; } .file-cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 0 20px; margin-bottom: 20px; } .file-cat-item { background: white; padding: 15px 10px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); } .cat-icon { width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 20px; } .cat-name { font-size: 13px; color: #333; } .recent-files-title { padding: 0 20px; font-size: 16px; font-weight: 600; margin-bottom: 10px; } .file-list { background: white; margin: 0 20px; border-radius: 15px; padding: 0 15px; } .file-row { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; gap: 15px; } .file-row:last-child { border-bottom: none; } .file-icon-sm { width: 35px; height: 35px; background: #eee; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 18px; } .file-info { flex: 1; } .file-name { font-size: 14px; font-weight: 500; } .file-meta { font-size: 12px; color: #888; margin-top: 2px; }
+
+        /* Camera Flash Effect */
+        .flash-effect {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: white; opacity: 0; pointer-events: none; z-index: 1000;
+        }
+        .flash-effect.flash { animation: flash 0.4s ease-out; }
+        @keyframes flash { from { opacity: 0.7; } to { opacity: 0; } }
 
         @media (max-width: 450px) {
             .dock { gap: 10px; padding: 15px 20px; bottom: 75px; width: 90%; justify-content: space-between; }
@@ -232,7 +246,7 @@
         </div>
     </div>
 
-    <!-- DOK BAR -->
+    <!-- DOCK BAR -->
     <div class="dock" id="dockBar">
         <div class="app-icon phone" onclick="openApp('phone')"><img src="phone.png" alt="Phone"></div>
         <div class="app-icon message" onclick="openApp('messages')"><img src="messaging.png" alt="Messages"></div>
@@ -247,11 +261,22 @@
     </div>
 
     <!-- APPS -->
-    <div class="app-window" id="settingsApp"><div class="header-light"><h1>Settings</h1><div class="search-bar"><span>🔍</span> Search</div></div><div class="settings-content" style="flex:1; overflow-y:auto; padding-top:20px;"><div class="settings-group"><div class="settings-row"><div class="row-icon bg-gray">👤</div><div style="flex:1"><b>User</b><br><small style="color:gray">Apple ID</small></div><div>›</div></div></div><div class="settings-group"><div class="settings-row"><div class="row-icon bg-blue"><svg viewBox="0 0 24 24"><path d="M12 3c-4.4 0-8.5 1.5-11.7 4.1l1.4 1.4c2.8-2.3 6.4-3.5 10.3-3.5 3.9 0 7.5 1.3 10.3 3.5l1.4-1.4c-3.2-2.6-7.3-4.1-11.7-4.1zM12 7c-3.3 0-6.4 1.2-8.9 3.1l1.4 1.4c2.1-1.6 4.7-2.5 7.5-2.5s5.4.9 7.5 2.5l1.4-1.4c-2.5-2-5.6-3.1-8.9-3.1zM12 11c-2.3 0-4.4.8-6.1 2.2l6.1 6.1 6-6.1c-1.7-1.3-3.8-2.2-6-2.2z" fill="white"/></svg></div><div class="row-text">Wi-Fi</div><div class="row-arrow" style="margin-right:10px;font-size:13px;color:#8e8e93;">Off</div><div class="row-arrow">›</div></div><div class="settings-row"><div class="row-icon bg-green"><svg viewBox="0 0 24 24"><path d="M2,22 L22,22 L22,2 L2,22 Z" fill="white"/></svg></div><div class="row-text">Mobile network</div><div class="row-arrow">›</div></div><div class="settings-row"><div class="row-icon bg-blue" style="font-weight:bold;">B</div><div class="row-text">Bluetooth</div><div class="row-arrow">›</div></div><div class="settings-row"><div class="row-icon bg-orange"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="white"/></svg></div><div class="row-text">Connection & Sharing</div><div class="row-arrow">›</div></div></div></div></div>
+    <div class="app-window" id="settingsApp">
+        <div class="header-light"><h1>Settings</h1><div class="search-bar"><span>🔍</span> Search</div></div>
+        <div class="settings-content" style="flex:1; overflow-y:auto; padding-top:20px;">
+            <div class="settings-group"><div class="settings-row"><div class="row-icon bg-gray">👤</div><div style="flex:1"><b>User</b><br><small style="color:gray">Apple ID</small></div><div>›</div></div></div>
+            <div class="settings-group">
+                <div class="settings-row"><div class="row-icon bg-blue"><svg viewBox="0 0 24 24"><path d="M12 3c-4.4 0-8.5 1.5-11.7 4.1l1.4 1.4c2.8-2.3 6.4-3.5 10.3-3.5 3.9 0 7.5 1.3 10.3 3.5l1.4-1.4c-3.2-2.6-7.3-4.1-11.7-4.1zM12 7c-3.3 0-6.4 1.2-8.9 3.1l1.4 1.4c2.1-1.6 4.7-2.5 7.5-2.5s5.4.9 7.5 2.5l1.4-1.4c-2.5-2-5.6-3.1-8.9-3.1zM12 11c-2.3 0-4.4.8-6.1 2.2l6.1 6.1 6-6.1c-1.7-1.3-3.8-2.2-6-2.2z" fill="white"/></svg></div><div class="row-text">Wi-Fi</div><div class="row-arrow" style="margin-right:10px;font-size:13px;color:#8e8e93;">Off</div><div class="row-arrow">›</div></div>
+                <div class="settings-row"><div class="row-icon bg-green"><svg viewBox="0 0 24 24"><path d="M2,22 L22,22 L22,2 L2,22 Z" fill="white"/></svg></div><div class="row-text">Mobile network</div><div class="row-arrow">›</div></div>
+                <div class="settings-row"><div class="row-icon bg-blue" style="font-weight:bold;">B</div><div class="row-text">Bluetooth</div><div class="row-arrow">›</div></div>
+                <div class="settings-row"><div class="row-icon bg-orange"><svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="white"/></svg></div><div class="row-text">Connection & Sharing</div><div class="row-arrow">›</div></div>
+            </div>
+        </div>
+    </div>
     <div class="app-window" id="phoneApp"><div class="phone-display-area"><div id="phoneNumber"></div></div><div class="dialer-pad"><div class="dialer-grid"><div class="dial-key" onclick="typeNumber('1')"><span class="dial-num">1</span></div><div class="dial-key" onclick="typeNumber('2')"><span class="dial-num">2</span></div><div class="dial-key" onclick="typeNumber('3')"><span class="dial-num">3</span></div><div class="dial-key" onclick="typeNumber('4')"><span class="dial-num">4</span></div><div class="dial-key" onclick="typeNumber('5')"><span class="dial-num">5</span></div><div class="dial-key" onclick="typeNumber('6')"><span class="dial-num">6</span></div><div class="dial-key" onclick="typeNumber('7')"><span class="dial-num">7</span></div><div class="dial-key" onclick="typeNumber('8')"><span class="dial-num">8</span></div><div class="dial-key" onclick="typeNumber('9')"><span class="dial-num">9</span></div><div class="dial-key">*</div><div class="dial-key" onclick="typeNumber('0')">0</div><div class="dial-key">#</div><div style="grid-column: 1/4; display:flex; justify-content:center;"><div class="call-btn"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div></div></div></div></div>
     <div class="app-window" id="messagesApp"><div class="header-light"><h1>Messages</h1><div class="search-bar"><span>🔍</span> Search</div></div><div class="msg-list"><div class="msg-row"><div class="msg-avatar" style="background:#007AFF">M</div><div class="msg-content"><div class="msg-name">Mom <span class="msg-date">9:41</span></div><div class="msg-preview">When are you coming home?</div></div></div></div></div>
     <div class="app-window" id="browserApp"><div class="browser-toolbar"><div class="url-box">🔒 google.com</div></div><div class="browser-content"><div class="google-logo"><span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span></div><div class="fake-search">Search...</div></div></div>
-    <div class="app-window" id="cameraApp"><div class="camera-view"><video id="cameraFeed" autoplay playsinline muted></video></div><div class="camera-controls"><div class="cam-icon-btn"></div><div class="shutter-btn"></div><div class="cam-icon-btn"></div></div></div>
+    <div class="app-window" id="cameraApp"><div class="camera-view"><div class="flash-effect" id="flashOverlay"></div><video id="cameraFeed" autoplay playsinline muted></video></div><div class="camera-controls"><div class="cam-icon-btn"></div><div class="shutter-btn" onclick="takePicture()"></div><div class="cam-icon-btn"></div></div></div>
     <div class="app-window" id="appStoreApp"><div class="header-light"><h1>App Store</h1><div class="search-bar"><span>🔍</span> Games, Apps, Stories</div></div><div class="store-content"><div class="store-featured"><div class="featured-text"><h3>Today</h3><h2>Game of the Day</h2><p>An epic adventure awaits you.</p></div></div><div class="store-section-title">Popular Apps <a href="#">See All</a></div><div class="store-list"><div class="store-item"><div class="store-item-icon"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=100"></div><div class="store-item-info"><div class="store-item-name">Instagram</div></div><button class="get-btn" onclick="downloadApp(this)">GET</button></div></div></div></div>
     <div class="app-window" id="musicApp"><div class="music-hero"><div class="album-art"><img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=600&auto=format&fit=crop"></div><div class="music-info"><div class="music-title">Blinding Lights</div><div class="music-artist">The Weeknd</div></div><div class="player-controls"><div class="ctrl-btn"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></div><div class="play-btn" onclick="togglePlay(this)"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><div class="ctrl-btn"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></div></div></div><div class="header-light" style="padding: 20px;"><h1>Library</h1></div><div class="song-list-container"><div class="song-row"><div class="song-idx">1</div><div class="song-meta"><div class="song-name">Starboy</div></div><div class="song-dur">3:50</div></div></div></div>
     <div class="app-window" id="clockApp"><div class="clock-container"><div class="live-clock" id="liveClockDisplay">12:00:00</div><div class="live-date" id="liveDateDisplay">Monday, Dec 1</div></div><div class="clock-tabs"><div><span>⏰</span>Alarm</div><div class="active"><span>clock</span>Clock</div><div><span>⏱</span>Stopwatch</div></div></div>
@@ -268,11 +293,23 @@
     <div class="app-window" id="filesApp"><div class="header-light"><h1>My Files</h1><div class="search-bar"><span>🔍</span> Search file</div></div><div class="store-content"><div class="storage-box"><div class="storage-title"><span>Internal storage</span><span>65%</span></div><div class="storage-bar-bg"><div class="storage-bar-fill"></div></div><div class="storage-detail">83.2GB used of 128GB</div></div><div class="file-cats"><div class="file-cat-item"><div class="cat-icon" style="background:#fff3e0; color:#f57c00">🖼️</div><span class="cat-name">Images</span></div><div class="file-cat-item"><div class="cat-icon" style="background:#e3f2fd; color:#1976d2">🎥</div><span class="cat-name">Videos</span></div><div class="file-cat-item"><div class="cat-icon" style="background:#e8f5e9; color:#388e3c">🎵</div><span class="cat-name">Audio</span></div><div class="file-cat-item"><div class="cat-icon" style="background:#f3e5f5; color:#7b1fa2">📄</div><span class="cat-name">Documents</span></div><div class="file-cat-item"><div class="cat-icon" style="background:#ffebee; color:#d32f2f">⬇️</div><span class="cat-name">Downloads</span></div><div class="file-cat-item"><div class="cat-icon" style="background:#eceff1; color:#455a64">🤖</div><span class="cat-name">APKs</span></div></div><div class="recent-files-title">Recent files</div><div class="file-list"><div class="file-row"><div class="file-icon-sm">📄</div><div class="file-info"><div class="file-name">Project_Report.pdf</div><div class="file-meta">10:30 • 2.4 MB</div></div></div><div class="file-row"><div class="file-icon-sm">🖼️</div><div class="file-info"><div class="file-name">IMG_20231201.jpg</div><div class="file-meta">Yesterday • 3.1 MB</div></div></div></div></div></div>
 
     <!-- NAV BAR -->
-    <div class="nav-bar">
-        <img src="https://i.postimg.cc/xjgSkbK9/back-button-classic.png" alt="Back" class="nav-btn" onclick="goBack()">
-        <img src="https://i.postimg.cc/s2FFFPR5/home-button-classic.png" alt="Home" class="nav-btn" onclick="closeAllApps()">
-        <img src="https://i.postimg.cc/C1YW5F5d/recents-button-classic.png" alt="Recents" class="nav-btn" onclick="toggleRecents()">
+    <div class="nav-bar" id="navBar">
+        <!-- Back (Chevron) -->
+        <svg class="nav-btn" onclick="goBack()" viewBox="0 0 24 24">
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+        </svg>
+        <!-- Home (Circle) -->
+        <svg class="nav-btn" onclick="closeAllApps()" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="7"/>
+        </svg>
+        <!-- Recents (Square) -->
+        <svg class="nav-btn" onclick="toggleRecents()" viewBox="0 0 24 24">
+            <rect x="7" y="7" width="10" height="10" rx="1.5"/>
+        </svg>
     </div>
+    
+    <!-- AUDIO ELEMENT -->
+    <audio id="shutterSound" src="/sounds/ui/camera_click.ogg" preload="auto"></audio>
 
     <script>
         // --- VARIABLES ---
@@ -289,7 +326,8 @@
             'manager': { name: 'Phone Manager', icon: '<img src="phone-manager.png">' },
             'notes': { name: 'Notes', icon: '<img src="notes.png">' },
             'mail': { name: 'Mail', icon: '<img src="mail.png">' },
-            'files': { name: 'My Files', icon: '<img src="files.png">' }
+            'files': { name: 'Files', icon: '<img src="files.png">' },
+            'gallery': { name: 'Gallery', icon: '<img src="gallery.png">' }
         };
         let recentApps = [];
         const videoElement = document.getElementById('cameraFeed');
@@ -298,6 +336,14 @@
         // --- CAMERA ---
         async function startCamera() { try { stream = await navigator.mediaDevices.getUserMedia({ video: true }); videoElement.srcObject = stream; } catch (err) {} }
         function stopCamera() { if (stream) { stream.getTracks().forEach(t => t.stop()); videoElement.srcObject = null; stream = null; } }
+        function takePicture() {
+            const shutterSound = document.getElementById('shutterSound');
+            shutterSound.currentTime = 0;
+            shutterSound.play();
+            const flashOverlay = document.getElementById('flashOverlay');
+            flashOverlay.classList.add('flash');
+            setTimeout(() => flashOverlay.classList.remove('flash'), 400);
+        }
 
         // --- SWIPE LOGIC ---
         let startY = 0; let startX = 0; const triggerHeight = 50; const screenWidth = window.innerWidth;
